@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "8715905408",
+    "project_id": "food-delivery-app-b29c0",
+    "storage_bucket": "food-delivery-app-b29c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:8715905408:android:1deb3e582bc821ebf03965",
+        "android_client_info": {
+          "package_name": "com.arif.food_delivery_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "8715905408-ohl9juo15d4685sn3g9fc8t01b0791d0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHgMR6gH5B5YJLD0A7t4DUmkx9w1ucd0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "8715905408-ohl9juo15d4685sn3g9fc8t01b0791d0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
