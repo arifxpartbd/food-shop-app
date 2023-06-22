@@ -13,6 +13,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  String userName = "";
+  String userEmail = "";
 
 
   Future<void> checkUserData() async {
@@ -24,14 +26,20 @@ class _HomeScreenState extends State<HomeScreen> {
           .get()
           .then((snapshot) {
         final profileData = snapshot.data();
+        userName = profileData?['name'] ?? "User Name";
+        userEmail = profileData?['email']?? "user email";
+        setState(() {
+
+        });
         if (profileData == null ||
             profileData['name'] == null ||
             profileData['email'] == null) {
-          Get.to(const ProfileUpdateScreen());
+          Get.to(const ProfileScreen());
         }
       });
     }
   }
+
 
 
   @override
@@ -47,9 +55,23 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Home Screen"),
       ),
       drawer: Drawer(
+        //backgroundColor: MyColors.brandColor,
         child: ListView(
           children: [
+            DrawerHeader(
+              padding: EdgeInsets.zero,
+                child: UserAccountsDrawerHeader(
+                  accountName: Text(userName,style: const TextStyle(color: Colors.white),),
+                  accountEmail: Text(userEmail),
 
+                )),
+
+            ListTile(
+              title: const Text("Profile"),
+              onTap: (){
+                Get.to(const ProfileScreen());
+              },
+            )
           ],
         ),
       ),

@@ -81,16 +81,34 @@ class UserAuthController extends GetxController {
   }
 
   Future<void> updateProfileData(
-      String name, String mobile, String shippingaddress) async {
+
+      String? name, String? mobile, String? address, String profileImage) async {
+    isLoading.value = true;
     final User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final DocumentReference documentRef =
           FirebaseFirestore.instance.collection('users').doc(user.uid);
       await documentRef.update(
-          {'name': name, 'mobile': mobile, 'shippingaddress': shippingaddress});
+          {'name': name, 'mobile': mobile, 'address': address, 'profileImage':profileImage});
 
+      isLoading.value = false;
       // Optionally, you can update the user object locally
       user.updateDisplayName(name);
+    }else{
+      isLoading.value = false;
     }
   }
+
+  Future<Map<String, dynamic>> fetchUserData() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final userData =
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      return userData.data() as Map<String, dynamic>;
+    }
+    return {};
+  }
+
+
+
 }
