@@ -8,5 +8,5 @@ class MyColors{
   static const Color black = Color(0xFF000000);
   static const Color red = Color(0xFFFF0000);
   // static const Color brandColor = Color.fromRGBO(254, 64, 102, 20);
-  static const Color brandColor = Color.fromRGBO(0, 128, 0, 1);
+  static const Color brandColor = Color.fromRGBO(226, 26, 0112, 1);
 }
