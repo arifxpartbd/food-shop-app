@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
+import 'package:food_delivery_app/screens/add_product_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
 import 'package:get/get.dart';
@@ -147,13 +148,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
               },
               title: const Text('Terms & Conditions / privacy'),
-            ),ListTile(
+            ),
+
+            ListTile(
               onTap: (){
                 _userAuthController.signOut().then((value){
                   Get.offAll(const LoginScreen());
                 });
               },
               title: const Text('Log out'),
+            ),ListTile(
+              onTap: (){
+                Get.to(const AddProductScreen());
+              },
+              title: const Text('Add Product'),
             ),
             
           ],

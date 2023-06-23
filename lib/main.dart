@@ -8,9 +8,13 @@ import 'package:food_delivery_app/screens/login_screen.dart';
 import 'package:food_delivery_app/utils/my_colors.dart';
 import 'package:get/get.dart';
 
+import 'firebase_options.dart';
+
+
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
   runApp(const MyApp());
 }
 
