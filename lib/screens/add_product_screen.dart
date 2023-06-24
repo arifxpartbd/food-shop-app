@@ -14,50 +14,35 @@ class AddProductScreen extends StatefulWidget {
 }
 
 class _AddProductScreenState extends State<AddProductScreen> {
-  List<String> selectedImageUrls = [];
+
+  bool _showLoading = false;
+
+  double _loadingProgress = 0.0;
+
+  List<File> selectedImages = [];
+
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController discountController = TextEditingController();
-  bool _showLoading = false;
-  double _loadingProgress = 0.0;
 
   Future<void> selectImages() async {
     final pickedImages = await ImagePicker().pickMultiImage();
     if (pickedImages != null) {
-      List<String> imageUrls = [];
+      List<File> images = [];
       for (final pickedImage in pickedImages) {
         final image = File(pickedImage.path);
-        String imageUrl = await uploadImage(image);
-        imageUrls.add(imageUrl);
+        images.add(image);
       }
       setState(() {
-        selectedImageUrls = imageUrls;
+        selectedImages = images;
       });
     }
   }
 
-  Future<String> uploadImage(File image) async {
-    String filename = Uuid().v4();
-    Reference storageRef =
-    FirebaseStorage.instance.ref().child('product_images/$filename.jpg');
-
-    UploadTask uploadTask = storageRef.putFile(image);
-
-    uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
-      setState(() {
-        _loadingProgress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
-      });
-    });
-
-    await uploadTask;
-    String imageUrl = await storageRef.getDownloadURL();
-    return imageUrl;
-  }
-
   void removeImage(int index) {
     setState(() {
-      selectedImageUrls.removeAt(index);
+      selectedImages.removeAt(index);
     });
   }
 
@@ -66,7 +51,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       double price,
       double discount,
       String description,
-      List<String> imageUrls,
+      List<File> images,
       ) async {
     setState(() {
       _showLoading = true;
@@ -75,6 +60,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference productsRef = firestore.collection('products');
+
+    List<String> imageUrls = [];
+
+    for (int i = 0; i < images.length; i++) {
+      File image = images[i];
+      String filename = const Uuid().v4();
+      Reference storageRef =
+      FirebaseStorage.instance.ref().child('product_images/$filename.jpg');
+
+      UploadTask uploadTask = storageRef.putFile(image);
+
+      uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
+        setState(() {
+          _loadingProgress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+        });
+      });
+
+      String imageUrl = await (await uploadTask).ref.getDownloadURL();
+      imageUrls.add(imageUrl);
+    }
 
     DocumentReference newProductRef = productsRef.doc();
     Map<String, dynamic> productData = {
@@ -94,7 +99,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       });
       print('Product added to Firestore with ID: ${newProductRef.id}');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Product added successfully')),
+        const SnackBar(content: Text('Product added successfully')),
       );
     })
         .catchError((error) {
@@ -103,6 +108,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _loadingProgress = 0.0;
       });
       print('Failed to add product to Firestore: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add product')),
+      );
     });
   }
 
@@ -110,34 +118,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Product'),
+        title: const Text('Add Product'),
       ),
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ElevatedButton(
                   onPressed: selectImages,
-                  child: Text('Select Images'),
+                  child: const Text('Select Images'),
                 ),
-                SizedBox(height: 16.0),
-                selectedImageUrls.isNotEmpty
+                const SizedBox(height: 16.0),
+                selectedImages.isNotEmpty
                     ? Container(
                   height: 200.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: selectedImageUrls.length,
+                    itemCount: selectedImages.length,
                     itemBuilder: (context, index) {
                       return Stack(
                         children: [
                           Container(
                             width: 200.0,
-                            margin: EdgeInsets.only(right: 16.0),
-                            child: Image.network(
-                              selectedImageUrls[index],
+                            margin: const EdgeInsets.only(right: 16.0),
+                            child: Image.file(
+                              selectedImages[index],
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -145,7 +153,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             top: 8.0,
                             right: 8.0,
                             child: IconButton(
-                              icon: Icon(Icons.close),
+                              icon: const Icon(Icons.close),
                               onPressed: () => removeImage(index),
                             ),
                           ),
@@ -154,31 +162,31 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     },
                   ),
                 )
-                    : Placeholder(fallbackHeight: 200.0),
-                SizedBox(height: 16.0),
+                    : const Placeholder(fallbackHeight: 200.0),
+                const SizedBox(height: 16.0),
                 TextFormField(
                   controller: nameController,
-                  decoration: InputDecoration(labelText: 'Product Name'),
+                  decoration: const InputDecoration(labelText: 'Product Name'),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 TextFormField(
                   controller: priceController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Price'),
+                  decoration: const InputDecoration(labelText: 'Price'),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 TextFormField(
                   controller: descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 TextFormField(
                   controller: discountController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: 'Discount'),
+                  decoration: const InputDecoration(labelText: 'Discount'),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () {
                     final name = nameController.text;
@@ -186,23 +194,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     final description = descriptionController.text;
                     final discount = double.tryParse(discountController.text) ?? 0.0;
 
-                    addProductToFirestore(
-                      name,
-                      price,
-                      discount,
-                      description,
-                      selectedImageUrls,
-                    );
+                    addProductToFirestore(name, price, discount, description, selectedImages);
 
                     nameController.clear();
                     priceController.clear();
                     descriptionController.clear();
                     discountController.clear();
                     setState(() {
-                      selectedImageUrls = [];
+                      selectedImages = [];
                     });
                   },
-                  child: Text('Add Product'),
+                  child: const Text('Add Product'),
                 ),
               ],
             ),
@@ -214,16 +216,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16.0),
-                    Text(
+                    const CircularProgressIndicator(),
+                    const SizedBox(height: 16.0),
+                    const Text(
                       'Uploading...',
                       style: TextStyle(color: Colors.white),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     Text(
                       '${_loadingProgress.toStringAsFixed(1)}%',
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),

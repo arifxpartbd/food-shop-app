@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/getxControllerFile/product_controller.dart';
 import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
+import 'package:food_delivery_app/models/product_model.dart';
 import 'package:food_delivery_app/screens/add_product_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
@@ -23,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String imageUrl = '';
 
   final UserAuthController _userAuthController = Get.find<UserAuthController>();
+  final ProductController _productController = Get.find<ProductController>();
 
   Future<void> checkUserData() async {
     final User? currentUser = FirebaseAuth.instance.currentUser;
@@ -52,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     checkUserData();
+    _productController.products;
   }
   @override
   Widget build(BuildContext context) {
@@ -61,9 +65,111 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
           IconButton(onPressed: (){}, icon: const Icon(Icons.card_giftcard)),
-
         ],
       ),
+
+      body: StreamBuilder<List<Product>>(
+        stream: _productController.productsStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // Show loading indicator
+            return Center(child: CircularProgressIndicator());
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            // Show message when no products are found
+            return Center(child: Text("No products found"));
+          } else {
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.7,
+              ),
+              itemCount: snapshot.data?.length ?? 0,
+              itemBuilder: (context, index) {
+                Product product = snapshot.data![index];
+                return GestureDetector(
+                  onTap: () {
+                    // Handle product tap event
+                  },
+                  child: Card(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Image.network(
+                            product.imageUrls[0],
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.name,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text("\$${product.price.toStringAsFixed(2)}"),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+        },
+      ),
+      // body: Obx((){
+      //   if (_productController.loading.value) {
+      //     // Show loading indicator
+      //     return Center(child: CircularProgressIndicator());
+      //   } else if (_productController.products.isEmpty) {
+      //     // Show message when no products are found
+      //     return Center(child: Text("No products found"));
+      //   }
+      //       else{
+      //         return GridView.builder(
+      //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      //               crossAxisCount: 2,
+      //               childAspectRatio: 0.7
+      //             ),
+      //             itemCount: _productController.products.length,
+      //             itemBuilder: (context, index){
+      //               Product product = _productController.products[index];
+      //               return GestureDetector(
+      //                 onTap: (){
+      //
+      //                 },
+      //                 child: Card(
+      //                   child: Column(
+      //                     children: [
+      //                       Expanded(child: Image.network(product.imageUrls[0],
+      //                       fit: BoxFit.cover,
+      //                       ),
+      //                       ),
+      //                       Padding(padding: const EdgeInsets.all(8.0),
+      //                       child: Column(
+      //                         crossAxisAlignment: CrossAxisAlignment.start,
+      //                         children: [
+      //                           Text(product.name,
+      //                           style: const TextStyle(fontWeight: FontWeight.bold),
+      //                           ),
+      //                           Text("\$${product.price.toStringAsFixed(2)}")
+      //                         ],
+      //                       ),
+      //                       )
+      //                     ],
+      //                   ),
+      //                 ),
+      //               );
+      //             }
+      //         );
+      //       }
+      //     }
+      // ),
+
       drawer: Drawer(
         //backgroundColor: MyColors.brandColor,
         child: ListView(
@@ -163,7 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               title: const Text('Add Product'),
             ),
-            
+
           ],
         ),
       ),
