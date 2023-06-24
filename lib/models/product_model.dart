@@ -1,12 +1,16 @@
 
 class Product {
-  final String id;
+    final String id;
   final String name;
   final double price;
+  final double discount;
+  final String description;
   final List<String> imageUrls;
   final List<Review>? reviews; // Optional list of reviews
 
   Product({
+    required this.description,
+    required this.discount,
     required this.id,
     required this.name,
     required this.price,
@@ -27,6 +31,8 @@ class Product {
         : null;
 
     return Product(
+      discount: map['discount']?.toDouble() ?? 0.0,
+      description: map['description'] ?? '',
       id: id,
       name: map['name'] ?? '',
       price: (map['price'] ?? 0.0).toDouble(),

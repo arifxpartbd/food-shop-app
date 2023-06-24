@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,9 @@ import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
 import 'package:food_delivery_app/models/product_model.dart';
 import 'package:food_delivery_app/screens/add_product_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
+import 'package:food_delivery_app/screens/product_details_page.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
+import 'package:food_delivery_app/utils/my_text_style.dart';
 import 'package:get/get.dart';
 
 import '../utils/my_colors.dart';
@@ -26,6 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final UserAuthController _userAuthController = Get.find<UserAuthController>();
   final ProductController _productController = Get.find<ProductController>();
+
+  final List<String> sliderImages = [
+    'image1.jpg',
+    'image2.jpeg',
+    'image3.jpg',
+    'image5.jpg',
+    'image6.jpg',
+  ];
 
   Future<void> checkUserData() async {
     final User? currentUser = FirebaseAuth.instance.currentUser;
@@ -68,58 +79,93 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      body: StreamBuilder<List<Product>>(
-        stream: _productController.productsStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show loading indicator
-            return Center(child: CircularProgressIndicator());
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Show message when no products are found
-            return Center(child: Text("No products found"));
-          } else {
-            return GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: snapshot.data?.length ?? 0,
-              itemBuilder: (context, index) {
-                Product product = snapshot.data![index];
-                return GestureDetector(
-                  onTap: () {
-                    // Handle product tap event
-                  },
-                  child: Card(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Image.network(
-                            product.imageUrls[0],
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CarouselSlider(
+            items: sliderImages.map((image) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                  image: DecorationImage(
+                    image: AssetImage('images/$image'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                width: double.infinity,
+                height: 250,
+              );
+
+            }).toList(),
+            options: CarouselOptions(
+              height: 250,
+              autoPlay: true,
+              aspectRatio: 16 / 9,
+              viewportFraction: 0.8,
+              enlargeCenterPage: true,
+              enableInfiniteScroll: true,
+            ),
+          ),
+          const SizedBox(height: 16,),
+          Text("All Foods", style: MyStyle.myTitleTextStyle(Colors.black),),
+          const SizedBox(height: 16,),
+          Expanded(
+            child: StreamBuilder<List<Product>>(
+              stream: _productController.productsStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Show loading indicator
+                  return const Center(child: CircularProgressIndicator());
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  // Show message when no products are found
+                  return const Center(child: Text("No products found"));
+                } else {
+                  return GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.7,
+                    ),
+                    itemCount: snapshot.data?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      Product product = snapshot.data![index];
+                      return GestureDetector(
+                        onTap: () {
+                          Get.to(ProductDetailsScreen(product: product));
+                          // Handle product tap event
+                        },
+                        child: Card(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                product.name,
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              Expanded(
+                                child: Image.network(
+                                  product.imageUrls[0],
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              Text("\$${product.price.toStringAsFixed(2)}"),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      product.name,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    Text("\$${product.price.toStringAsFixed(2)}"),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                );
+                      );
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
       // body: Obx((){
       //   if (_productController.loading.value) {
