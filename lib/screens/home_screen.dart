@@ -79,93 +79,103 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
 
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CarouselSlider(
-            items: sliderImages.map((image) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                  image: DecorationImage(
-                    image: AssetImage('images/$image'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                width: double.infinity,
-                height: 250,
-              );
-
-            }).toList(),
-            options: CarouselOptions(
-              height: 250,
-              autoPlay: true,
-              aspectRatio: 16 / 9,
-              viewportFraction: 0.8,
-              enlargeCenterPage: true,
-              enableInfiniteScroll: true,
-            ),
-          ),
-          const SizedBox(height: 16,),
-          Text("All Foods", style: MyStyle.myTitleTextStyle(Colors.black),),
-          const SizedBox(height: 16,),
-          Expanded(
-            child: StreamBuilder<List<Product>>(
-              stream: _productController.productsStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  // Show loading indicator
-                  return const Center(child: CircularProgressIndicator());
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  // Show message when no products are found
-                  return const Center(child: Text("No products found"));
-                } else {
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CarouselSlider(
+              items: sliderImages.map((image) {
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                    image: DecorationImage(
+                      image: AssetImage('images/$image'),
+                      fit: BoxFit.cover,
                     ),
-                    itemCount: snapshot.data?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      Product product = snapshot.data![index];
-                      return GestureDetector(
-                        onTap: () {
-                          Get.to(ProductDetailsScreen(product: product));
-                          // Handle product tap event
-                        },
-                        child: Card(
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Image.network(
-                                  product.imageUrls[0],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.name,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    Text("\$${product.price.toStringAsFixed(2)}"),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
+                  ),
+                  width: double.infinity,
+                  height: 250,
+                );
+
+              }).toList(),
+              options: CarouselOptions(
+                height: 250,
+                autoPlay: true,
+                aspectRatio: 16 / 9,
+                viewportFraction: 0.8,
+                enlargeCenterPage: true,
+                enableInfiniteScroll: true,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16,),
+            Text("All Foods", style: MyStyle.myTitleTextStyle(Colors.black),),
+            const SizedBox(height: 16,),
+            Expanded(
+              child: StreamBuilder<List<Product>>(
+                stream: _productController.productsStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Show loading indicator
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    // Show message when no products are found
+                    return const Center(child: Text("No products found"));
+                  } else {
+                    return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        Product product = snapshot.data![index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(ProductDetailsScreen(product: product));
+                            // Handle product tap event
+                          },
+                          child: Card(
+                            child: Column(
+                              children: [
+                                Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                                        image: DecorationImage(
+                                          image: NetworkImage(product.imageUrls[0]),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      width: double.infinity,
+                                      //height: 250,
+                                    )
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.name,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      Text("\$${product.price.toStringAsFixed(2)}"),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       // body: Obx((){
       //   if (_productController.loading.value) {
@@ -315,7 +325,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               title: const Text('Add Product'),
             ),
-
           ],
         ),
       ),

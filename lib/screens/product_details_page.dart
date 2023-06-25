@@ -1,21 +1,27 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/getxControllerFile/cart_controller.dart';
 import 'package:food_delivery_app/utils/my_colors.dart';
 import 'package:food_delivery_app/utils/my_text_style.dart';
 import 'package:food_delivery_app/widgets/app_button.dart';
 import '../models/product_model.dart';
+import 'package:get/get.dart';
 
 
 class ProductDetailsScreen extends StatefulWidget {
   final Product product;
 
+
   const ProductDetailsScreen({super.key, required this.product});
 
   @override
-  _ProductDetailsScreenState createState() => _ProductDetailsScreenState();
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  final CartController _cartController = Get.find<CartController>();
+  int cartItem = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(
@@ -93,24 +99,65 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 ],
               ),
 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      IconButton(onPressed: (){
+                        //_cartController
+                        //_cartController.decreaseQuantity(widget.product);
+                        cartItem--;
+                        setState(() {
+
+                        });
+                      },
+                          icon: const Icon(Icons.remove)),
+
+                      //Obx(() => Text(_cartController.getCartItem(widget.product)?.quantity.toString()??'0')),
+                      Text(cartItem.toString()),
+
+                      IconButton(onPressed: (){
+                        // _cartController.increaseQuantity(widget.product);
+                        // _cartController.addToCart(widget.product);
+                        cartItem++;
+                        setState(() {
+
+                        });
+                      },
+                          icon: const Icon(Icons.add)),
+                    ],
+                  ),
+                  
+                  IconButton(onPressed: (){
+                    _cartController.addToFav(widget.product);
+
+                  }, icon: Icon(Icons.favorite))
+                ],
+              ),
+              const SizedBox(height: 16,),
               Text(widget.product.name,style: MyStyle.myTitleTextStyle(Colors.black),),
               const SizedBox(height: 8,),
-              Text(widget.product.price.toStringAsFixed(2)),
+              Text(widget.product.price.toStringAsFixed(2),style: MyStyle.mySubTitleTextStyle(MyColors.brandColor,),),
               const SizedBox(height: 8.0,),
               Text(widget.product.description),
               const SizedBox(height: 8.0,),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                    backgroundColor: MyColors.brandColor,
-                    buttonText: "Add to cart", onTap: (){
 
-                }),
-              )
 
 
             ],
           ),
+        ),
+      ),
+      bottomSheet: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 4),
+        child: SizedBox(
+          width: double.infinity,
+          child: AppButton(
+              backgroundColor: MyColors.brandColor,
+              buttonText: "Add to cart", onTap: (){
+                _cartController.addToCart(widget.product, cartItem);
+          }),
         ),
       ),
     );
