@@ -1,66 +1,98 @@
 
+// class Product {
+//     final String id;
+//   final String name;
+//   final double price;
+//   final double discount;
+//   final String description;
+//   final List<String> imageUrls;
+//   final List<Review>? reviews; // Optional list of reviews
+//
+//   Product({
+//     required this.description,
+//     required this.discount,
+//     required this.id,
+//     required this.name,
+//     required this.price,
+//     required this.imageUrls,
+//     this.reviews,
+//   });
+//
+//   // Other methods and constructors
+//
+//   factory Product.fromMap(Map<String, dynamic> map, String id) {
+//     final List<dynamic> reviewData = map['reviews'] ?? []; // Handle optional reviews
+//
+//     // Parse review data into a list of Review objects
+//     final List<Review>? reviews = reviewData.isNotEmpty
+//         ? reviewData
+//         .map((review) => Review.fromMap(review as Map<String, dynamic>))
+//         .toList()
+//         : null;
+//
+//     return Product(
+//       discount: map['discount']?.toDouble() ?? 0.0,
+//       description: map['description'] ?? '',
+//       id: id,
+//       name: map['name'] ?? '',
+//       price: (map['price'] ?? 0.0).toDouble(),
+//       imageUrls: List<String>.from(map['imageUrls'] ?? []),
+//       reviews: reviews,
+//     );
+//   }
+// }
+//
+// class Review {
+//   final String userId;
+//   final String comment;
+//   final double rating;
+//
+//   Review({
+//     required this.userId,
+//     required this.comment,
+//     required this.rating,
+//   });
+//
+//   factory Review.fromMap(Map<String, dynamic> map) {
+//     return Review(
+//       userId: map['userId'] ?? '',
+//       comment: map['comment'] ?? '',
+//       rating: (map['rating'] ?? 0.0).toDouble(),
+//     );
+//   }
+// }
+
 class Product {
-    final String id;
+  final String id;
   final String name;
   final double price;
   final double discount;
   final String description;
   final List<String> imageUrls;
-  final List<Review>? reviews; // Optional list of reviews
+  int quantity; // Added quantity property
 
   Product({
-    required this.description,
-    required this.discount,
     required this.id,
     required this.name,
     required this.price,
+    required this.discount,
+    required this.description,
     required this.imageUrls,
-    this.reviews,
+    this.quantity = 1, // Default quantity is 1
   });
-
-  // Other methods and constructors
 
   factory Product.fromMap(Map<String, dynamic> map, String id) {
-    final List<dynamic> reviewData = map['reviews'] ?? []; // Handle optional reviews
-
-    // Parse review data into a list of Review objects
-    final List<Review>? reviews = reviewData.isNotEmpty
-        ? reviewData
-        .map((review) => Review.fromMap(review as Map<String, dynamic>))
-        .toList()
-        : null;
-
     return Product(
-      discount: map['discount']?.toDouble() ?? 0.0,
-      description: map['description'] ?? '',
       id: id,
       name: map['name'] ?? '',
-      price: (map['price'] ?? 0.0).toDouble(),
+      price: map['price']?.toDouble() ?? 0.0,
+      discount: map['discount']?.toDouble() ?? 0.0,
+      description: map['description'] ?? '',
       imageUrls: List<String>.from(map['imageUrls'] ?? []),
-      reviews: reviews,
     );
   }
 }
 
-class Review {
-  final String userId;
-  final String comment;
-  final double rating;
-
-  Review({
-    required this.userId,
-    required this.comment,
-    required this.rating,
-  });
-
-  factory Review.fromMap(Map<String, dynamic> map) {
-    return Review(
-      userId: map['userId'] ?? '',
-      comment: map['comment'] ?? '',
-      rating: (map['rating'] ?? 0.0).toDouble(),
-    );
-  }
-}
 
 
 
