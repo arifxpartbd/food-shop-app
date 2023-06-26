@@ -7,6 +7,7 @@ import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
 import 'package:food_delivery_app/models/product_model.dart';
 import 'package:food_delivery_app/screens/add_product_screen.dart';
 import 'package:food_delivery_app/screens/cart_list_screen.dart';
+import 'package:food_delivery_app/screens/favorite_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
 import 'package:food_delivery_app/screens/product_details_page.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
@@ -75,7 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text("Home Screen"),
         actions: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.favorite_border)),
+          IconButton(onPressed: (){
+            Get.to(FavoriteScreen());
+
+          }, icon: const Icon(Icons.favorite_border)),
           IconButton(onPressed: (){
             Get.to( CartListScreen());
           }, icon: const Icon(Icons.shopping_cart)),

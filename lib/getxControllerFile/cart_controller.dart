@@ -22,6 +22,7 @@ class CartController extends GetxController {
       .snapshots()
       .map((snapshot) => snapshot.data() as Map<String, dynamic>);
 
+
   void addToCart(Product product, int quantity) async {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userId = user?.uid ?? "";
@@ -112,6 +113,8 @@ class CartController extends GetxController {
           'name': product.name,
           'price': product.price,
           'quantity': 1,
+          'image': product.imageUrls[0],
+          'description':product.description
         });
       }
       update();
@@ -123,6 +126,8 @@ class CartController extends GetxController {
             'name': product.name,
             'price': product.price,
             'quantity': 1,
+            'image': product.imageUrls[0],
+            'description':product.description
           }
         ]
       };
@@ -135,7 +140,7 @@ class CartController extends GetxController {
   void removeFromFav(Product product) async {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userId = user?.uid ?? "";
-    final cartData = _cartItems[userId];
+    final cartData = _favItems[userId];
 
     if (cartData != null && cartData['items'] != null) {
       final List<dynamic> items = cartData['items'];
@@ -152,7 +157,7 @@ class CartController extends GetxController {
       }
     }
 
-    await _cartRef.doc(userId).update(_cartItems[userId]); // Update the document in Firestore
+    await _favRef.doc(userId).update(_favItems[userId]); // Update the document in Firestore
 
     update();
   }
@@ -241,4 +246,47 @@ class CartController extends GetxController {
 
     return total;
   }
+
+  List<dynamic> getFavoriteItems(){
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userId = user?.uid??"";
+
+    final favData = _favItems[userId];
+
+    if(favData !=null && favData['items'] != null){
+      return List<dynamic>.from(favData['items']);
+    }else{
+      return [];
+    }
+  }
+
+
+  bool isProductInCart(Product product) {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userId = user?.uid ?? "";
+    final cartData = _cartItems[userId];
+
+    if (cartData != null && cartData['items'] != null) {
+      final List<dynamic> items = cartData['items'];
+      final index = items.indexWhere((item) => item['id'] == product.id);
+      return index != -1;
+    }
+
+    return false;
+  }
+  bool isProductInFav(Product product) {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userId = user?.uid ?? "";
+    final cartData = _favItems[userId];
+
+    if (cartData != null && cartData['items'] != null) {
+      final List<dynamic> items = cartData['items'];
+      final index = items.indexWhere((item) => item['id'] == product.id);
+      return index != -1;
+    }
+
+    return false;
+  }
+
+
 }
