@@ -29,7 +29,7 @@ class CartController extends GetxController {
     final cartData = _cartItems[userId];
 
     if (cartData != null && cartData['items'] != null) {
-      final List<dynamic> items = cartData['items'];
+      final List<dynamic> items = List.from(cartData['items']);
 
       final index = items.indexWhere((item) => item['id'] == product.id);
       if (index != -1) {
@@ -40,10 +40,10 @@ class CartController extends GetxController {
           'name': product.name,
           'price': product.price,
           'quantity': quantity,
-
         });
       }
-      update();
+
+      _cartItems[userId]['items'] = items;
     } else {
       _cartItems[userId] = {
         'items': [
@@ -52,24 +52,16 @@ class CartController extends GetxController {
             'name': product.name,
             'price': product.price,
             'quantity': quantity,
-
           }
         ]
       };
     }
 
-    await _cartRef.doc(userId).update(_cartItems[userId]); // Update the document in Firestore
-
-    _cartRef.doc(userId).snapshots().listen((snapshot) {
-      if (snapshot.exists) {
-        final data = snapshot.data();
-        _cartItems[userId] = data;
-        update();
-      }
-    });
+    await _cartRef.doc(userId).set(_cartItems[userId]); // Set the document in Firestore
 
     update();
   }
+
 
   void removeFromCart(Product product) async {
     final User? user = FirebaseAuth.instance.currentUser;
@@ -288,5 +280,50 @@ class CartController extends GetxController {
     return false;
   }
 
+
+  void placeOrder(String paymentMethod) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userId = user?.uid ?? "";
+    final cartData = _cartItems[userId];
+
+    if (cartData != null && cartData['items'] != null) {
+      // Get the list of items from the cart data
+      final List<dynamic> items = cartData['items'];
+
+      // Perform any necessary operations for order placement
+      // (e.g., saving to Firestore, updating order status, etc.)
+      final orderId = await saveOrderToFirestore(userId, items, paymentMethod);
+
+      // Clear the cart items after placing the order
+      clearCart(userId);
+
+      print('Order placed with payment method: $paymentMethod');
+      print('Order ID: $orderId');
+    } else {
+      print('No items in the cart.');
+    }
+  }
+
+  Future<String> saveOrderToFirestore(
+      String userId, List<dynamic> items, String paymentMethod) async {
+    final orderData = {
+      'userId': userId,
+      'items': items,
+      'paymentMethod': paymentMethod,
+      'status': 'pending',
+      // Add any other necessary order details
+    };
+
+    final orderRef = FirebaseFirestore.instance.collection('orders');
+    final newOrderDoc = await orderRef.add(orderData);
+
+    return newOrderDoc.id;
+  }
+
+  void clearCart(String userId) async {
+    _cartItems[userId] = null;
+    await _cartRef.doc(userId).delete();
+    update();
+  }
 
 }
