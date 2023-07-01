@@ -18,7 +18,7 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final CartController _cartController = Get.find<CartController>();
-  int cartItem = 0;
+  int cartItem = 1;
   int favItem = 0;
   bool isInCart = false;
   bool isInFav = false;

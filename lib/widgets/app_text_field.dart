@@ -20,6 +20,7 @@ class AppTextField extends StatelessWidget {
   final bool? textFieldEnable;
   final int? maxLine;
 
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(

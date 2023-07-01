@@ -17,6 +17,8 @@ class CartController extends GetxController {
   Map<String, dynamic> get cartItems => _cartItems;
   Map<String, dynamic> get favItems => _favItems;
 
+
+
   Stream<Map<String, dynamic>> get cartStream => _cartRef
       .doc(FirebaseAuth.instance.currentUser?.uid ?? '')
       .snapshots()
@@ -29,8 +31,8 @@ class CartController extends GetxController {
     final cartData = _cartItems[userId];
 
     if (cartData != null && cartData['items'] != null) {
-      final List<dynamic> items = List.from(cartData['items']);
-
+      //final List<dynamic> items = List.from(cartData['items']);
+      final List<dynamic> items = cartData['items'];
       final index = items.indexWhere((item) => item['id'] == product.id);
       if (index != -1) {
         items[index]['quantity'] += quantity;
@@ -61,41 +63,14 @@ class CartController extends GetxController {
 
     update();
   }
-
-
-  void removeFromCart(Product product) async {
-    final User? user = FirebaseAuth.instance.currentUser;
-    final String userId = user?.uid ?? "";
-    final cartData = _cartItems[userId];
-
-    if (cartData != null && cartData['items'] != null) {
-      final List<dynamic> items = cartData['items'];
-      final index = items.indexWhere((item) => item['id'] == product.id);
-
-      if (index != -1) {
-        final int newQuantity = items[index]['quantity'] - 1;
-
-        if (newQuantity > 0) {
-          items[index]['quantity'] = newQuantity;
-        } else {
-          items.removeAt(index);
-        }
-      }
-    }
-
-    await _cartRef.doc(userId).update(_cartItems[userId]); // Update the document in Firestore
-
-    update();
-  }
-
   void addToFav(Product product) async {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userId = user?.uid ?? "";
     final favData = _favItems[userId];
 
     if (favData != null && favData['items'] != null) {
-      final List<dynamic> items = favData['items'];
-
+     final List<dynamic> items = favData['items'];
+      //final List<dynamic> items = List.from(favData['items']);
       final index = items.indexWhere((item) => item['id'] == product.id);
       if (index != -1) {
         items[index]['quantity']++;
@@ -128,6 +103,33 @@ class CartController extends GetxController {
     await _favRef.doc(userId).set(_favItems[userId]);
     update();
   }
+
+
+  void removeFromCart(Product product) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userId = user?.uid ?? "";
+    final cartData = _cartItems[userId];
+
+    if (cartData != null && cartData['items'] != null) {
+      final List<dynamic> items = cartData['items'];
+      final index = items.indexWhere((item) => item['id'] == product.id);
+
+      if (index != -1) {
+        final int newQuantity = items[index]['quantity'] - 1;
+
+        if (newQuantity > 0) {
+          items[index]['quantity'] = newQuantity;
+        } else {
+          items.removeAt(index);
+        }
+      }
+    }
+
+    await _cartRef.doc(userId).update(_cartItems[userId]); // Update the document in Firestore
+
+    update();
+  }
+
 
   void removeFromFav(Product product) async {
     final User? user = FirebaseAuth.instance.currentUser;

@@ -11,7 +11,9 @@ import 'package:food_delivery_app/screens/favorite_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
 import 'package:food_delivery_app/screens/product_details_page.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
+import 'package:food_delivery_app/screens/see_all_product.dart';
 import 'package:food_delivery_app/utils/my_text_style.dart';
+import 'package:food_delivery_app/widgets/app_text_field.dart';
 import 'package:get/get.dart';
 
 import '../utils/my_colors.dart';
@@ -24,7 +26,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String userName = "";
   String userEmail = "";
   String imageUrl = '';
@@ -50,11 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
           .then((snapshot) {
         final profileData = snapshot.data();
         userName = profileData?['name'] ?? "User Name";
-        userEmail = profileData?['email']?? "user email";
-        imageUrl = profileData?['profileImage']?? "";
-        setState(() {
-
-        });
+        userEmail = profileData?['email'] ?? "user email";
+        imageUrl = profileData?['profileImage'] ?? "";
+        setState(() {});
         if (profileData == null ||
             profileData['name'] == null ||
             profileData['email'] == null) {
@@ -63,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -70,24 +70,27 @@ class _HomeScreenState extends State<HomeScreen> {
     checkUserData();
     _productController.products;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Screen"),
         actions: [
-          IconButton(onPressed: (){
-            Get.to(FavoriteScreen());
-
-          }, icon: const Icon(Icons.favorite_border)),
-          IconButton(onPressed: (){
-            Get.to( CartListScreen());
-          }, icon: const Icon(Icons.shopping_cart)),
+          IconButton(
+              onPressed: () {
+                Get.to(FavoriteScreen());
+              },
+              icon: const Icon(Icons.favorite_border)),
+          IconButton(
+              onPressed: () {
+                Get.to(CartListScreen());
+              },
+              icon: const Icon(Icons.shopping_cart)),
         ],
       ),
-
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -95,19 +98,19 @@ class _HomeScreenState extends State<HomeScreen> {
               items: sliderImages.map((image) {
                 return Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                    borderRadius: BorderRadius.circular(
+                        10), // Adjust the radius as needed
                     image: DecorationImage(
                       image: AssetImage('images/$image'),
                       fit: BoxFit.cover,
                     ),
                   ),
                   width: double.infinity,
-                  height: 250,
+                  height: 200,
                 );
-
               }).toList(),
               options: CarouselOptions(
-                height: 250,
+                height: 200,
                 autoPlay: true,
                 aspectRatio: 16 / 9,
                 viewportFraction: 0.8,
@@ -115,9 +118,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 enableInfiniteScroll: true,
               ),
             ),
-            const SizedBox(height: 16,),
-            Text("All Foods", style: MyStyle.myTitleTextStyle(Colors.black),),
-            const SizedBox(height: 16,),
+            const SizedBox(
+              height: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "All Foods",
+                  style: MyStyle.myTitleTextStyle(Colors.black),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Get.to(const SeeAllProductScreen());
+                    },
+                    child: const Text('See all'))
+              ],
+            ),
+            const SizedBox(
+              height: 16,
+            ),
             Expanded(
               child: StreamBuilder<List<Product>>(
                 stream: _productController.productsStream,
@@ -130,7 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const Center(child: Text("No products found"));
                   } else {
                     return GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.7,
                       ),
@@ -143,31 +164,36 @@ class _HomeScreenState extends State<HomeScreen> {
                             // Handle product tap event
                           },
                           child: Card(
+                            elevation: 2,
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
                                     child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                                        image: DecorationImage(
-                                          image: NetworkImage(product.imageUrls[0]),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      width: double.infinity,
-                                      //height: 250,
-                                    )
-                                ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        10), // Adjust the radius as needed
+                                    image: DecorationImage(
+                                      image: NetworkImage(product.imageUrls[0]),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  width: double.infinity,
+                                  //height: 250,
+                                )),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         product.name,
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
-                                      Text("\$${product.price.toStringAsFixed(2)}"),
+                                      Text(
+                                          "\$${product.price.toStringAsFixed(2)}"),
                                     ],
                                   ),
                                 ),
@@ -184,75 +210,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      // body: Obx((){
-      //   if (_productController.loading.value) {
-      //     // Show loading indicator
-      //     return Center(child: CircularProgressIndicator());
-      //   } else if (_productController.products.isEmpty) {
-      //     // Show message when no products are found
-      //     return Center(child: Text("No products found"));
-      //   }
-      //       else{
-      //         return GridView.builder(
-      //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      //               crossAxisCount: 2,
-      //               childAspectRatio: 0.7
-      //             ),
-      //             itemCount: _productController.products.length,
-      //             itemBuilder: (context, index){
-      //               Product product = _productController.products[index];
-      //               return GestureDetector(
-      //                 onTap: (){
-      //
-      //                 },
-      //                 child: Card(
-      //                   child: Column(
-      //                     children: [
-      //                       Expanded(child: Image.network(product.imageUrls[0],
-      //                       fit: BoxFit.cover,
-      //                       ),
-      //                       ),
-      //                       Padding(padding: const EdgeInsets.all(8.0),
-      //                       child: Column(
-      //                         crossAxisAlignment: CrossAxisAlignment.start,
-      //                         children: [
-      //                           Text(product.name,
-      //                           style: const TextStyle(fontWeight: FontWeight.bold),
-      //                           ),
-      //                           Text("\$${product.price.toStringAsFixed(2)}")
-      //                         ],
-      //                       ),
-      //                       )
-      //                     ],
-      //                   ),
-      //                 ),
-      //               );
-      //             }
-      //         );
-      //       }
-      //     }
-      // ),
-
       drawer: Drawer(
         //backgroundColor: MyColors.brandColor,
         child: ListView(
           children: [
             DrawerHeader(
-              padding: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
                 child: UserAccountsDrawerHeader(
                   decoration: const BoxDecoration(color: MyColors.brandColor),
                   otherAccountsPictures: const [
                     CircleAvatar(
-                        backgroundImage: AssetImage('images/arif.jpeg'),
+                      backgroundImage: AssetImage('images/arif.jpeg'),
                     )
                   ],
                   currentAccountPicture: CircleAvatar(
                     backgroundImage: NetworkImage(imageUrl),
                   ),
-                  accountName: Text(userName,style: const TextStyle(color: Colors.white),),
+                  accountName: Text(
+                    userName,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                   accountEmail: Text(userEmail),
                 )),
-
             const ListTile(
               title: Text("Refund account"),
               subtitle: Text("Blance and payment methods"),
@@ -262,72 +241,87 @@ class _HomeScreenState extends State<HomeScreen> {
               thickness: 1,
               color: Colors.black12,
             ),
-
             const ListTile(
               title: Text('Become a pandapro'),
-              leading: Icon(Icons.star,color: MyColors.brandColor,),
-            ),const ListTile(
-              title: Text('Voucher & Offers'),
-              leading: Icon(Icons.gif,color: MyColors.brandColor,),
+              leading: Icon(
+                Icons.star,
+                color: MyColors.brandColor,
+              ),
             ),
-
+            const ListTile(
+              title: Text('Voucher & Offers'),
+              leading: Icon(
+                Icons.gif,
+                color: MyColors.brandColor,
+              ),
+            ),
             const ListTile(
               title: Text('Favourites'),
-              leading: Icon(Icons.favorite_border,color: MyColors.brandColor,),
+              leading: Icon(
+                Icons.favorite_border,
+                color: MyColors.brandColor,
+              ),
             ),
-
             const ListTile(
               title: Text('Orders & reordering'),
-              leading: Icon(Icons.list_alt,color: MyColors.brandColor,),
+              leading: Icon(
+                Icons.list_alt,
+                color: MyColors.brandColor,
+              ),
             ),
-
-             ListTile(
-              onTap: (){
+            ListTile(
+              onTap: () {
                 Get.to(const ProfileScreen());
               },
               title: const Text('Profile'),
-              leading: const Icon(Icons.person,color: MyColors.brandColor,),
+              leading: const Icon(
+                Icons.person,
+                color: MyColors.brandColor,
+              ),
             ),
-
             const ListTile(
               title: Text('Address'),
-              leading: Icon(Icons.location_on,color: MyColors.brandColor,),
+              leading: Icon(
+                Icons.location_on,
+                color: MyColors.brandColor,
+              ),
             ),
-
             const ListTile(
               title: Text('Help Center'),
-              leading: Icon(Icons.error,color: MyColors.brandColor,),
+              leading: Icon(
+                Icons.error,
+                color: MyColors.brandColor,
+              ),
             ),
-
             const ListTile(
               title: Text('Invite friends'),
-              leading: Icon(Icons.card_giftcard,color: MyColors.brandColor,),
+              leading: Icon(
+                Icons.card_giftcard,
+                color: MyColors.brandColor,
+              ),
             ),
             const Divider(
               thickness: 2,
               color: Colors.black12,
             ),
             ListTile(
-              onTap: (){
-
-              },
+              onTap: () {},
               title: const Text('Settings'),
-            ),ListTile(
-              onTap: (){
-
-              },
+            ),
+            ListTile(
+              onTap: () {},
               title: const Text('Terms & Conditions / privacy'),
             ),
-
             ListTile(
-              onTap: (){
-                _userAuthController.signOut().then((value){
+              onTap: () {
+                _userAuthController.signOut().then((value) {
                   Get.offAll(const LoginScreen());
                 });
               },
               title: const Text('Log out'),
-            ),ListTile(
-              onTap: (){
+            ),
+            ListTile(
+              onTap: () {
                 Get.to(const AddProductScreen());
               },
               title: const Text('Add Product'),

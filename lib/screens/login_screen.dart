@@ -118,12 +118,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Get.snackbar(
                                         "Login Error",
                                         "Invalid email or password",
+                                        backgroundColor: Colors.white,
                                         duration: const Duration(seconds: 3),
                                       );
                                     }
                                   }).catchError((error) {
                                     // Display an error message
                                     Get.snackbar(
+                                      backgroundColor: Colors.white,
                                       "Login Error",
                                       error.toString(),
                                       duration: const Duration(seconds: 3),
