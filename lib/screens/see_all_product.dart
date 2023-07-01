@@ -37,141 +37,145 @@ class _SeeAllProductScreenState extends State<SeeAllProductScreen> {
       appBar: AppBar(
         title: const Text("All Products"),
       ),
-      body: Column(
-        children: [
-        TextFormField(
-          onChanged: (query){
-            _productSearchController.searchProduct(query);
-          },
-        controller: _searchController,
-        decoration: const InputDecoration(
-          prefixIcon: Icon(Icons.search,color: MyColors.brandColor,),
-          hintText: "Search hear......",
-          //filled: true,
-          //fillColor: Colors.white70,
-          border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-          ),
-        ),
-        keyboardType: TextInputType.text,
-      ),
-
-
-          Expanded(
-            child: Obx(
-                  () {
-                final filteredProducts = _productSearchController.filteredProducts;
-                if (_searchController.text.isEmpty) {
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
-                    ),
-                    itemCount: _productController.products.length,
-                    itemBuilder: (context, index) {
-                      Product product = _productController.products[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Get.to(ProductDetailsScreen(product: product));
-                          // Handle product tap event
-                        },
-                        child: Card(
-                          elevation: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: NetworkImage(product.imageUrls[0]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  width: double.infinity,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.name,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "\$${product.price.toStringAsFixed(2)}",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                } else if (filteredProducts.isEmpty) {
-                  return const Center(child: Text("No products found"));
-                } else {
-                  return GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
-                    ),
-                    itemCount: filteredProducts.length,
-                    itemBuilder: (context, index) {
-                      Product product = filteredProducts[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Get.to(ProductDetailsScreen(product: product));
-                          // Handle product tap event
-                        },
-                        child: Card(
-                          elevation: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: NetworkImage(product.imageUrls[0]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  width: double.infinity,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.name,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      "\$${product.price.toStringAsFixed(2)}",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+          TextFormField(
+            onChanged: (query){
+              _productSearchController.searchProduct(query);
+            },
+          controller: _searchController,
+          decoration: const InputDecoration(
+            prefixIcon: Icon(Icons.search,color: MyColors.brandColor,),
+            hintText: "Search hear......",
+            filled: true,
+            fillColor: Colors.white70,
+            border: OutlineInputBorder(
+              //borderSide: BorderSide.none
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
           ),
-        ],
+          keyboardType: TextInputType.text,
+        ),
+
+
+            Expanded(
+              child: Obx(
+                    () {
+                  final filteredProducts = _productSearchController.filteredProducts;
+                  if (_searchController.text.isEmpty) {
+                    return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: _productController.products.length,
+                      itemBuilder: (context, index) {
+                        Product product = _productController.products[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(ProductDetailsScreen(product: product));
+                            // Handle product tap event
+                          },
+                          child: Card(
+                            elevation: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(product.imageUrls[0]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    width: double.infinity,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.name,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "\$${product.price.toStringAsFixed(2)}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else if (filteredProducts.isEmpty) {
+                    return const Center(child: Text("No products found"));
+                  } else {
+                    return GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: filteredProducts.length,
+                      itemBuilder: (context, index) {
+                        Product product = filteredProducts[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Get.to(ProductDetailsScreen(product: product));
+                            // Handle product tap event
+                          },
+                          child: Card(
+                            elevation: 2,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        image: NetworkImage(product.imageUrls[0]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    width: double.infinity,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.name,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "\$${product.price.toStringAsFixed(2)}",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
