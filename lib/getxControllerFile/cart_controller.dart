@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:food_delivery_app/models/cart_item_model.dart';
 import 'package:food_delivery_app/models/product_model.dart';
 import 'package:get/get.dart';
@@ -299,28 +300,40 @@ class CartController extends GetxController {
       // Clear the cart items after placing the order
       clearCart(userId);
 
-      print('Order placed with payment method: $paymentMethod');
-      print('Order ID: $orderId');
+      if (kDebugMode) {
+        print('Order placed with payment method: $paymentMethod');
+      }
+      if (kDebugMode) {
+        //print('Order ID: $orderId');
+      }
     } else {
-      print('No items in the cart.');
+      if (kDebugMode) {
+        print('No items in the cart.');
+      }
     }
   }
 
-  Future<String> saveOrderToFirestore(
-      String userId, List<dynamic> items, String paymentMethod) async {
+  Future<void> saveOrderToFirestore(String userId, List<dynamic> items,
+      String paymentMethod) async {
     final orderData = {
       'userId': userId,
       'items': items,
       'paymentMethod': paymentMethod,
       'status': 'pending',
+      'orderDate': DateTime.now(),
       // Add any other necessary order details
     };
 
     final orderRef = FirebaseFirestore.instance.collection('orders');
     final newOrderDoc = await orderRef.add(orderData);
+    final orderId = newOrderDoc.id;
 
-    return newOrderDoc.id;
+    // Save the order ID to the user's document
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    await userRef.update({'orderId': orderId});
   }
+
+
 
   void clearCart(String userId) async {
     _cartItems[userId] = null;

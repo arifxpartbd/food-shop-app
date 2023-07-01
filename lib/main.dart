@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_delivery_app/getxControllerFile/cart_controller.dart';
+import 'package:food_delivery_app/getxControllerFile/order_controller.dart';
 import 'package:food_delivery_app/getxControllerFile/product_controller.dart';
+import 'package:food_delivery_app/getxControllerFile/product_search_controller.dart';
 import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
 import 'package:food_delivery_app/screens/home_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
@@ -70,5 +72,7 @@ class AppBindings extends Bindings {
     Get.put<UserAuthController>(UserAuthController());
     Get.put<ProductController>(ProductController());
     Get.put<CartController>(CartController());
+    Get.put<OrderController>(OrderController());
+    Get.put<ProductSearchController>(ProductSearchController());
   }
 }

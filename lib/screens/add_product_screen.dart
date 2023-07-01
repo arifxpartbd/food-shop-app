@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -28,16 +29,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   Future<void> selectImages() async {
     final pickedImages = await ImagePicker().pickMultiImage();
-    if (pickedImages != null) {
-      List<File> images = [];
-      for (final pickedImage in pickedImages) {
-        final image = File(pickedImage.path);
-        images.add(image);
-      }
-      setState(() {
-        selectedImages = images;
-      });
+    List<File> images = [];
+    for (final pickedImage in pickedImages) {
+      final image = File(pickedImage.path);
+      images.add(image);
     }
+    setState(() {
+      selectedImages = images;
+    });
   }
 
   void removeImage(int index) {
@@ -97,7 +96,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _showLoading = false;
         _loadingProgress = 0.0;
       });
-      print('Product added to Firestore with ID: ${newProductRef.id}');
+      if (kDebugMode) {
+        print('Product added to Firestore with ID: ${newProductRef.id}');
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Product added successfully')),
       );
@@ -107,7 +108,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
         _showLoading = false;
         _loadingProgress = 0.0;
       });
-      print('Failed to add product to Firestore: $error');
+      if (kDebugMode) {
+        print('Failed to add product to Firestore: $error');
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to add product')),
       );
@@ -133,7 +136,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 const SizedBox(height: 16.0),
                 selectedImages.isNotEmpty
-                    ? Container(
+                    ? SizedBox(
                   height: 200.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,

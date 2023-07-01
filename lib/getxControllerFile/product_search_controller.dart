@@ -3,11 +3,11 @@ import '../models/product_model.dart';
 import 'dart:async';
 
 class ProductSearchController extends GetxController {
-  RxList<Product> _filteredProducts = RxList<Product>([]);
+  final RxList<Product> _filteredProducts = RxList<Product>([]);
   List<Product> get filteredProducts => _filteredProducts.value;
   List<Product> _products = []; // List of all products
 
-  StreamController<List<Product>> _productsStreamController = StreamController<List<Product>>.broadcast();
+  final StreamController<List<Product>> _productsStreamController = StreamController<List<Product>>.broadcast();
   Stream<List<Product>> get productsStream => _productsStreamController.stream;
 
   void setProducts(List<Product> products) {

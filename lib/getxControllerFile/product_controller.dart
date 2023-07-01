@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../models/product_model.dart';
 
@@ -31,19 +32,21 @@ class ProductController extends GetxController {
       final querySnapshot = await _productsRef.get();
       final List<Product> loadedProducts = [];
 
-      if (querySnapshot != null && querySnapshot.docs.isNotEmpty) {
-        querySnapshot.docs.forEach((doc) {
+      if (querySnapshot.docs.isNotEmpty) {
+        for (var doc in querySnapshot.docs) {
           final data = doc.data();
           if (data is Map<String, dynamic>) {
             final product = Product.fromMap(data, doc.id);
             loadedProducts.add(product);
           }
-        });
+        }
       }
 
       products.value = loadedProducts;
     } catch (e) {
-      print("Error fetching products: $e");
+      if (kDebugMode) {
+        print("Error fetching products: $e");
+      }
     } finally {
       loading.value = false; // Set loading to false after fetching data
     }

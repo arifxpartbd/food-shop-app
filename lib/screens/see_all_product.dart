@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/product_details_page.dart';
 import 'package:food_delivery_app/utils/my_colors.dart';
-import 'package:food_delivery_app/widgets/app_text_field.dart';
 import 'package:get/get.dart';
 import '../getxControllerFile/product_controller.dart';
 import '../getxControllerFile/product_search_controller.dart';

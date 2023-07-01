@@ -9,11 +9,11 @@ import 'package:food_delivery_app/screens/add_product_screen.dart';
 import 'package:food_delivery_app/screens/cart_list_screen.dart';
 import 'package:food_delivery_app/screens/favorite_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
+import 'package:food_delivery_app/screens/order_screen.dart';
 import 'package:food_delivery_app/screens/product_details_page.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
 import 'package:food_delivery_app/screens/see_all_product.dart';
 import 'package:food_delivery_app/utils/my_text_style.dart';
-import 'package:food_delivery_app/widgets/app_text_field.dart';
 import 'package:get/get.dart';
 
 import '../utils/my_colors.dart';
@@ -262,7 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: MyColors.brandColor,
               ),
             ),
-            const ListTile(
+            ListTile(
+              onTap: (){
+                Get.to(OrderScreen());
+              },
               title: Text('Orders & reordering'),
               leading: Icon(
                 Icons.list_alt,
