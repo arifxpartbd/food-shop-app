@@ -123,7 +123,7 @@ class OrderController extends GetxController {
       'userId': userId,
       'items': items,
       'paymentMethod': paymentMethod,
-      'status': 'pending',
+      'status': 'processing',
       'orderDate': Timestamp.now(),
       'totalAmount': totalAmount,
       'deviceToken': deviceToken,
@@ -146,25 +146,6 @@ class OrderController extends GetxController {
       await cartRef.doc(userId).update({'items': null});
     }
   }
-
-  // Future<void> updateOrderStatus(
-  //     String orderId, OrderStatus newStatus) async {
-  //   await ordersCollection
-  //       .doc(orderId)
-  //       .update({'status': newStatus.toString().split('.').last});
-  //
-  //   // Retrieve the order document
-  //   DocumentSnapshot<Map<String, dynamic>> orderDoc =
-  //   await ordersCollection.doc(orderId).get();
-  //
-  //   // Get the device token from the order document
-  //   String? deviceToken = orderDoc.data()?['deviceToken'];
-  //
-  //   if (deviceToken != null) {
-  //     // Send push notification with the updated order status
-  //     sendPushNotification('Your order status has been updated.', deviceToken);
-  //   }
-  // }
 
   void sendPushNotification(String body, String token) async {
     try {
@@ -190,7 +171,7 @@ class OrderController extends GetxController {
           },
         ),
       );
-      print('Push notification sent.');
+      print('Push notification sent');
     } catch (e) {
       print('Error sending push notification: $e');
     }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_delivery_app/utils/my_colors.dart';
 
 class OrderScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
+
+  OrderScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +46,9 @@ class OrderScreen extends StatelessWidget {
               );
             }
             final orders = snapshot.data!.docs.map((doc) {
-              final data = doc.data() as Map<String, dynamic>;
+              final data = doc.data()!;
               final itemsList = (data['items'] ?? []) as List<dynamic>; // Adjust the data type to List<dynamic>
-              final items = List<String>.from(itemsList.map((item) => item.toString()));
+              final items = List<Map<String, dynamic>>.from(itemsList);
               return Order(
                 orderId: doc.id,
                 userId: data['userId'].toString(), // Convert to string
@@ -58,16 +61,39 @@ class OrderScreen extends StatelessWidget {
               );
             }).toList();
 
-
+            if (orders.isEmpty) {
+              return const Center(
+                child: Text('No orders available.'),
+              );
+            }
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final Order order = orders[index];
-                return Card(
-                  child: ListTile(
-                    title: Text('Order ID: ${order.orderId}'),
-                    subtitle: Text('Total Amount: \$${order.totalAmount.toStringAsFixed(2)}'),
-                    trailing: Text('Status: ${order.status.toString().split('.').last}'),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Card(
+                    child: ListTile(
+                      title: Text('Order ID: ${order.orderId}'),
+                      trailing: Text('Status: ${order.status.toString().split('.').last}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (var item in order.items)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Product Name: ${item['name'].toString()}'),
+                                Text('Quantity: ${item['quantity'].toString()}'),
+                                Text('Price: \$${item['price'].toStringAsFixed(2)}'),
+                                Divider(thickness: 2,color: MyColors.brandColor,)
+                              ],
+                            ),
+                          Text('Total Amount: \$${order.totalAmount.toStringAsFixed(2)}'),
+                          //Text('Status: ${order.status.toString().split('.').last}'),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
@@ -84,7 +110,7 @@ class Order {
   final String userId;
   final DateTime orderDate;
   final double totalAmount;
-  final List<String> items;
+  final List<Map<String, dynamic>> items;
   final OrderStatus status;
 
   Order({

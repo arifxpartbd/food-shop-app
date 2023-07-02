@@ -305,7 +305,7 @@ class CartController extends GetxController {
         print('Order placed with payment method: $paymentMethod');
       }
       if (kDebugMode) {
-        //print('Order ID: $orderId');
+        //print('Order ID: ${orderId.toString()}');
       }
     } else {
       if (kDebugMode) {
@@ -336,12 +336,10 @@ class CartController extends GetxController {
     await userRef.update({'orderId': orderId});
   }
 
-
-
   void clearCart(String userId) async {
     _cartItems[userId] = null;
+    totalPrice == 0.0;
     await _cartRef.doc(userId).delete();
     update();
   }
-
 }
