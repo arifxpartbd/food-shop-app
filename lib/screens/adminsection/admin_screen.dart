@@ -3,7 +3,6 @@ import 'package:food_delivery_app/screens/adminsection/add_product_screen.dart';
 import 'package:food_delivery_app/screens/adminsection/admin_order_screen.dart';
 import 'package:food_delivery_app/screens/adminsection/product_update_search.dart';
 import 'package:food_delivery_app/screens/home_screen.dart';
-import 'package:food_delivery_app/screens/login_screen.dart';
 import 'package:food_delivery_app/utils/my_text_style.dart';
 import 'package:get/get.dart';
 

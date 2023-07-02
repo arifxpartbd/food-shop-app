@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/getxControllerFile/product_controller.dart';
 import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
 import 'package:food_delivery_app/models/product_model.dart';
-import 'package:food_delivery_app/screens/adminsection/add_product_screen.dart';
-import 'package:food_delivery_app/screens/adminsection/admin_order_screen.dart';
 import 'package:food_delivery_app/screens/adminsection/admin_screen.dart';
 import 'package:food_delivery_app/screens/cart_list_screen.dart';
 import 'package:food_delivery_app/screens/favorite_screen.dart';
@@ -265,10 +263,10 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black12,
             ),
             ListTile(
-              leading: Icon(Icons.sync,color: MyColors.brandColor,),
-              title: Text("Switch to admin mode"),
+              leading: const Icon(Icons.sync,color: MyColors.brandColor,),
+              title: const Text("Switch to admin mode"),
             onTap: (){
-              Get.offAll(AdminScreen());
+              Get.offAll(const AdminScreen());
             },
             ),
             const ListTile(

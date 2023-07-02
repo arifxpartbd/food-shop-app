@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_delivery_app/getxControllerFile/cart_controller.dart';
@@ -37,11 +38,17 @@ void requestPermission()async{
     sound: true
   );
   if(settings.authorizationStatus == AuthorizationStatus.authorized){
-    print("User granted");
+    if (kDebugMode) {
+      print("User granted");
+    }
   }else if(settings.authorizationStatus == AuthorizationStatus.provisional){
-    print("User permission granted provisional");
+    if (kDebugMode) {
+      print("User permission granted provisional");
+    }
   }else{
-    print("User deynai permisssion");
+    if (kDebugMode) {
+      print("User deynai permisssion");
+    }
   }
 }
 

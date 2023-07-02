@@ -46,7 +46,7 @@ class OrderScreen extends StatelessWidget {
               );
             }
             final orders = snapshot.data!.docs.map((doc) {
-              final data = doc.data()!;
+              final data = doc.data();
               final itemsList = (data['items'] ?? []) as List<dynamic>; // Adjust the data type to List<dynamic>
               final items = List<Map<String, dynamic>>.from(itemsList);
               return Order(
@@ -86,7 +86,7 @@ class OrderScreen extends StatelessWidget {
                                 Text('Product Name: ${item['name'].toString()}'),
                                 Text('Quantity: ${item['quantity'].toString()}'),
                                 Text('Price: \$${item['price'].toStringAsFixed(2)}'),
-                                Divider(thickness: 2,color: MyColors.brandColor,)
+                                const Divider(thickness: 2,color: MyColors.brandColor,)
                               ],
                             ),
                           Text('Total Amount: \$${order.totalAmount.toStringAsFixed(2)}'),

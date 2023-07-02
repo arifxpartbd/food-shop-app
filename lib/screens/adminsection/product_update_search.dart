@@ -56,7 +56,7 @@ class _ProductUpdateSearchState extends State<ProductUpdateSearch> {
                 _productSearchController.searchProduct(query!);
               },
               validator: (value) {
-
+                return null;
               },
             ),
           ),

@@ -141,7 +141,7 @@ class OrderController extends GetxController {
     await FirebaseFirestore.instance.collection('carts').doc(userId).get();
     final Map<String, dynamic>? cartData = cartDataSnapshot.data();
 
-    if (cartData != null && cartRef != null) {
+    if (cartData != null) {
       cartData['items'] = null;
       await cartRef.doc(userId).update({'items': null});
     }
@@ -171,9 +171,13 @@ class OrderController extends GetxController {
           },
         ),
       );
-      print('Push notification sent');
+      if (kDebugMode) {
+        print('Push notification sent');
+      }
     } catch (e) {
-      print('Error sending push notification: $e');
+      if (kDebugMode) {
+        print('Error sending push notification: $e');
+      }
     }
   }
 

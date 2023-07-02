@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/getxControllerFile/order_controller.dart';
 import 'package:food_delivery_app/utils/my_colors.dart';
@@ -17,6 +18,8 @@ class AdminOrdersScreen extends StatelessWidget {
 
 
   final CollectionReference<Map<String, dynamic>> ordersCollection = FirebaseFirestore.instance.collection('orders');
+
+  AdminOrdersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +120,9 @@ class AdminOrdersScreen extends StatelessWidget {
 
     if (deviceToken != null) {
       // Send push notification
-      print("my device token is: $deviceToken");
+      if (kDebugMode) {
+        print("my device token is: $deviceToken");
+      }
       _orderController.sendPushNotification(
         'Your order status has been updated to ${newStatus.toString().split('.').last.toLowerCase()}.',
         deviceToken,

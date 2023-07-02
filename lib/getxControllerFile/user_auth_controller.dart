@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class UserAuthController extends GetxController {
@@ -43,10 +44,14 @@ class UserAuthController extends GetxController {
           .update({'deviceToken': deviceToken});
 
       // Device token saved successfully
-      print('Device token saved successfully');
+      if (kDebugMode) {
+        print('Device token saved successfully');
+      }
     } catch (e) {
       // Error occurred while saving the device token
-      print('Error saving device token: $e');
+      if (kDebugMode) {
+        print('Error saving device token: $e');
+      }
     }
   }
 
