@@ -11,6 +11,8 @@ class AppTextField extends StatelessWidget {
     required this.validator,
     this.textFieldEnable,
     this.maxLine,
+    this.focusNode,
+    this.onChange
   });
   final String hintText;
   final TextInputType textInputType;
@@ -19,15 +21,19 @@ class AppTextField extends StatelessWidget {
   final String? Function(String?) validator;
   final bool? textFieldEnable;
   final int? maxLine;
+  final FocusNode? focusNode;
+  final String? Function(String?)? onChange;
 
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
       maxLines: maxLine,
       enabled: textFieldEnable,
       controller: controller,
       validator: validator,
+      onChanged: onChange,
       decoration: InputDecoration(
         prefixIcon: Icon(
           prefixIcon,

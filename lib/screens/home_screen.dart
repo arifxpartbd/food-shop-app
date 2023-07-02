@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/getxControllerFile/product_controller.dart';
 import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
 import 'package:food_delivery_app/models/product_model.dart';
-import 'package:food_delivery_app/screens/add_product_screen.dart';
-import 'package:food_delivery_app/screens/admin_order_screen.dart';
+import 'package:food_delivery_app/screens/adminsection/add_product_screen.dart';
+import 'package:food_delivery_app/screens/adminsection/admin_order_screen.dart';
+import 'package:food_delivery_app/screens/adminsection/admin_screen.dart';
 import 'package:food_delivery_app/screens/cart_list_screen.dart';
 import 'package:food_delivery_app/screens/favorite_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
@@ -15,6 +16,7 @@ import 'package:food_delivery_app/screens/product_details_page.dart';
 import 'package:food_delivery_app/screens/profile_update_screen.dart';
 import 'package:food_delivery_app/screens/see_all_product.dart';
 import 'package:food_delivery_app/utils/my_text_style.dart';
+import 'package:food_delivery_app/widgets/app_text_field.dart';
 import 'package:get/get.dart';
 
 import '../utils/my_colors.dart';
@@ -89,6 +91,26 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               icon: const Icon(Icons.shopping_cart)),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: (){
+                Get.to(const SeeAllProductScreen());
+              },
+              child: AppTextField(
+                textFieldEnable: false,
+                hintText: 'Search hear......',
+                textInputType: TextInputType.text, prefixIcon: Icons.search,
+                controller: TextEditingController(), validator: (value) {
+
+              },
+              ),
+            ),
+          ),
+          
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -242,6 +264,13 @@ class _HomeScreenState extends State<HomeScreen> {
               thickness: 1,
               color: Colors.black12,
             ),
+            ListTile(
+              leading: Icon(Icons.sync,color: MyColors.brandColor,),
+              title: Text("Switch to admin mode"),
+            onTap: (){
+              Get.offAll(AdminScreen());
+            },
+            ),
             const ListTile(
               title: Text('Become a pandapro'),
               leading: Icon(
@@ -256,9 +285,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: MyColors.brandColor,
               ),
             ),
-            const ListTile(
-              title: Text('Favourites'),
-              leading: Icon(
+             ListTile(
+              onTap: (){
+                Get.to(FavoriteScreen());
+              },
+              title: const Text('Favourites'),
+              leading: const Icon(
                 Icons.favorite_border,
                 color: MyColors.brandColor,
               ),
@@ -267,8 +299,8 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: (){
                 Get.to(OrderScreen());
               },
-              title: Text('Orders & reordering'),
-              leading: Icon(
+              title: const Text('Orders & reordering'),
+              leading: const Icon(
                 Icons.list_alt,
                 color: MyColors.brandColor,
               ),
@@ -280,13 +312,6 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Profile'),
               leading: const Icon(
                 Icons.person,
-                color: MyColors.brandColor,
-              ),
-            ),
-            const ListTile(
-              title: Text('Address'),
-              leading: Icon(
-                Icons.location_on,
                 color: MyColors.brandColor,
               ),
             ),
@@ -309,7 +334,9 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black12,
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Get.to(const ProfileScreen());
+              },
               title: const Text('Settings'),
             ),
             ListTile(
@@ -324,17 +351,17 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               title: const Text('Log out'),
             ),
-            ListTile(
-              onTap: () {
-                Get.to(const AddProductScreen());
-              },
-              title: const Text('Add Product'),
-            ),ListTile(
-              onTap: () {
-                Get.to( AdminOrdersScreen());
-              },
-              title: const Text('Admin orders'),
-            ),
+            // ListTile(
+            //   onTap: () {
+            //     Get.to(const AddProductScreen());
+            //   },
+            //   title: const Text('Add Product'),
+            // ),ListTile(
+            //   onTap: () {
+            //     Get.to( AdminOrdersScreen());
+            //   },
+            //   title: const Text('Admin orders'),
+            // ),
           ],
         ),
       ),

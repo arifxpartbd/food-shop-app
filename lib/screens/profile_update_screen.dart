@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/screens/adminsection/admin_screen.dart';
 import 'package:food_delivery_app/screens/home_screen.dart';
 import 'package:food_delivery_app/utils/my_colors.dart';
 import 'package:food_delivery_app/widgets/app_button.dart';
@@ -160,6 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 8),
           AppTextField(
+            textFieldEnable: false,
             hintText: "Email",
             textInputType: TextInputType.emailAddress,
             prefixIcon: Icons.email,
@@ -212,6 +214,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               });
             },
           ),
+
+          AppButton(
+              buttonText: 'Switch To Admin Mode', onTap: (){
+            Get.offAll(const AdminScreen());
+          }),
         ],
       ),
     );
