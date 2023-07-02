@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:food_delivery_app/models/cart_item_model.dart';
 import 'package:food_delivery_app/models/product_model.dart';
@@ -315,12 +316,14 @@ class CartController extends GetxController {
 
   Future<void> saveOrderToFirestore(String userId, List<dynamic> items,
       String paymentMethod) async {
+    String? deviceToken = await FirebaseMessaging.instance.getToken();
     final orderData = {
       'userId': userId,
       'items': items,
       'paymentMethod': paymentMethod,
       'status': 'pending',
       'orderDate': DateTime.now(),
+      'deviceToken': deviceToken,
       // Add any other necessary order details
     };
 

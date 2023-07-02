@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class UserAuthController extends GetxController {
+
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Rx<User?> currentUser = Rx<User?>(null);
@@ -25,11 +29,33 @@ class UserAuthController extends GetxController {
     _authSubscription?.cancel();
     super.onClose();
   }
+  Future<void> saveUserDeviceToken() async {
+    try {
+      // Get the device token
+      final String? deviceToken = await _firebaseMessaging.getToken();
+
+      // Save the device token to the user's document in Firestore
+      // Assuming you have a 'users' collection with documents containing user information
+      final userId = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'deviceToken': deviceToken});
+
+      // Device token saved successfully
+      print('Device token saved successfully');
+    } catch (e) {
+      // Error occurred while saving the device token
+      print('Error saving device token: $e');
+    }
+  }
 
   Future<void> login(String email, String password) async {
     try {
       isLoading.value = true;
+
       await _auth.signInWithEmailAndPassword(email: email, password: password);
+      saveUserDeviceToken();
       isLoading.value = false; //
     } catch (e) {
       isLoading.value = false; //
@@ -49,6 +75,7 @@ class UserAuthController extends GetxController {
 
       if (user != null) {
         // Save the email address in Firestore
+        saveUserDeviceToken();
         await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)

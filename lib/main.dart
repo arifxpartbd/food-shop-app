@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_delivery_app/getxControllerFile/cart_controller.dart';
@@ -18,8 +19,30 @@ import 'firebase_options.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  requestPermission();
   runApp(const MyApp());
+}
+
+void requestPermission()async{
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true
+  );
+  if(settings.authorizationStatus == AuthorizationStatus.authorized){
+    print("User granted");
+  }else if(settings.authorizationStatus == AuthorizationStatus.provisional){
+    print("User permission granted provisional");
+  }else{
+    print("User deynai permisssion");
+  }
 }
 
 class MyApp extends StatelessWidget {

@@ -6,6 +6,7 @@ import 'package:food_delivery_app/getxControllerFile/product_controller.dart';
 import 'package:food_delivery_app/getxControllerFile/user_auth_controller.dart';
 import 'package:food_delivery_app/models/product_model.dart';
 import 'package:food_delivery_app/screens/add_product_screen.dart';
+import 'package:food_delivery_app/screens/admin_order_screen.dart';
 import 'package:food_delivery_app/screens/cart_list_screen.dart';
 import 'package:food_delivery_app/screens/favorite_screen.dart';
 import 'package:food_delivery_app/screens/login_screen.dart';
@@ -328,6 +329,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 Get.to(const AddProductScreen());
               },
               title: const Text('Add Product'),
+            ),ListTile(
+              onTap: () {
+                Get.to( AdminOrdersScreen());
+              },
+              title: const Text('Admin orders'),
             ),
           ],
         ),

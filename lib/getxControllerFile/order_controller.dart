@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 enum OrderStatus {
   processing,
@@ -39,7 +43,6 @@ class OrderController extends GetxController {
     super.onInit();
   }
 
-
   Future<void> fetchOrders() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
@@ -63,7 +66,7 @@ class OrderController extends GetxController {
         return Order(
           orderId: doc.id,
           userId: data['userId'],
-          orderDate: data['orderDate'].toDate(),
+          orderDate: (data['orderDate'] as Timestamp).toDate(),
           totalAmount: data['totalAmount'],
           items: itemsList,
           status: OrderStatus.values.firstWhere(
@@ -76,7 +79,8 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> placeOrder(String paymentMethod, double totalAmount) async {
+  Future<void> placeOrder(
+      String paymentMethod, double totalAmount) async {
     final User? user = FirebaseAuth.instance.currentUser;
     final String userId = user?.uid ?? "";
 
@@ -92,8 +96,8 @@ class OrderController extends GetxController {
 
       // Perform any necessary operations for order placement
       // (e.g., saving to Firestore, updating order status, etc.)
-      final orderId =
-      await saveOrderToFirestore(userId, items, paymentMethod,totalAmount);
+      final orderId = await saveOrderToFirestore(
+          userId, items, paymentMethod, totalAmount);
 
       // Clear the cart items after placing the order
       clearCart(userId);
@@ -111,15 +115,18 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<String> saveOrderToFirestore(
-      String userId, List<dynamic> items, String paymentMethod, double totalAmount) async {
+  Future<String> saveOrderToFirestore(String userId, List<dynamic> items,
+      String paymentMethod, double totalAmount) async {
+    String? deviceToken = await FirebaseMessaging.instance.getToken();
+
     final orderData = {
       'userId': userId,
       'items': items,
       'paymentMethod': paymentMethod,
       'status': 'pending',
-      'orderDate': DateTime.now(),
-      'totalAmount':totalAmount
+      'orderDate': Timestamp.now(),
+      'totalAmount': totalAmount,
+      'deviceToken': deviceToken,
       // Add any other necessary order details
     };
 
@@ -140,5 +147,53 @@ class OrderController extends GetxController {
     }
   }
 
-// Rest of the code...
+  // Future<void> updateOrderStatus(
+  //     String orderId, OrderStatus newStatus) async {
+  //   await ordersCollection
+  //       .doc(orderId)
+  //       .update({'status': newStatus.toString().split('.').last});
+  //
+  //   // Retrieve the order document
+  //   DocumentSnapshot<Map<String, dynamic>> orderDoc =
+  //   await ordersCollection.doc(orderId).get();
+  //
+  //   // Get the device token from the order document
+  //   String? deviceToken = orderDoc.data()?['deviceToken'];
+  //
+  //   if (deviceToken != null) {
+  //     // Send push notification with the updated order status
+  //     sendPushNotification('Your order status has been updated.', deviceToken);
+  //   }
+  // }
+
+  void sendPushNotification(String body, String token) async {
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'key=AAAAAgeCKYA:APA91bFG5ZgITytWAUm9kLAvrBzUhkK_K2Zm8u6qVQSND9y9xA4zsXLG-olkvDJPaN2sff36QtzCZsf5TcXTA3wNPWFK2ifwCZ5LqH7FMwcPFdItu_ss8q3YjJZUG3Z25IV6SM2OmzSt',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+            'notification': <String, dynamic>{
+              'body': body,
+              'title': 'Order Status Updated',
+            },
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': '1',
+              'status': body,
+            },
+            'to': token,
+          },
+        ),
+      );
+      print('Push notification sent.');
+    } catch (e) {
+      print('Error sending push notification: $e');
+    }
+  }
+
 }

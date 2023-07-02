@@ -2,6 +2,8 @@
     package="com.arif.food_delivery_app">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
    <application
         android:label="food_delivery_app"
         android:name="${applicationName}"
@@ -32,5 +34,31 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+       <!-- Firebase Cloud Messaging service -->
+       <service
+           android:name="com.google.firebase.messaging.FirebaseMessagingService"
+           android:exported="false">
+           <intent-filter>
+               <action android:name="com.google.firebase.MESSAGING_EVENT" />
+           </intent-filter>
+       </service>
+
+       <service
+           android:name="com.google.firebase.components.ComponentDiscoveryService"
+           android:exported="false">
+           <meta-data
+               android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+               android:value="com.google.firebase.components.ComponentRegistrar" />
+       </service>
+       <service
+           android:name="your.package.name.MyFirebaseMessagingService"
+           android:exported="false">
+           <intent-filter>
+               <action android:name="com.google.firebase.MESSAGING_EVENT" />
+           </intent-filter>
+       </service>
+
+
     </application>
 </manifest>
