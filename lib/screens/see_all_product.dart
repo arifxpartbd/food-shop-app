@@ -57,8 +57,11 @@ class _SeeAllProductScreenState extends State<SeeAllProductScreen> {
                 controller: _searchController,
                 onChange: (query){
                   _productSearchController.searchProduct(query!);
+                  return null;
                 },
                 validator: (value) {
+                  return null;
+                
 
               },
               ),

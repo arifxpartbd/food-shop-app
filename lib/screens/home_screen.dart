@@ -102,6 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 hintText: 'Search hear......',
                 textInputType: TextInputType.text, prefixIcon: Icons.search,
                 controller: TextEditingController(), validator: (value) {
+                  return null;
+                
 
               },
               ),

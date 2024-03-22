@@ -54,6 +54,7 @@ class _ProductUpdateSearchState extends State<ProductUpdateSearch> {
               controller: _searchController,
               onChange: (query){
                 _productSearchController.searchProduct(query!);
+                return null;
               },
               validator: (value) {
                 return null;

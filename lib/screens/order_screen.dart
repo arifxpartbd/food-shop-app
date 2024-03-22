@@ -6,7 +6,7 @@ import 'package:food_delivery_app/utils/my_colors.dart';
 class OrderScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
 
-  OrderScreen({Key? key});
+  OrderScreen({super.key, Key? key});
 
   @override
   Widget build(BuildContext context) {
